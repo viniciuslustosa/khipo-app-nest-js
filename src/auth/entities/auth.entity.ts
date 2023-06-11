@@ -1,8 +1,8 @@
 export class Auth {
   _id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  organizationId: string;
   deleted: boolean;
   deletedAt: Date;
   createdAt: Date;
@@ -10,9 +10,9 @@ export class Auth {
 
   constructor(auth?: Partial<Auth>) {
     this._id = auth?._id;
-    this.name = auth?.name;
+    this.firstName = auth?.firstName;
+    this.lastName = auth?.lastName;
     this.email = auth?.email;
-    this.organizationId = auth?.organizationId;
     this.deleted = auth?.deleted;
     this.deletedAt = auth?.deletedAt;
     this.createdAt = auth?.createdAt;

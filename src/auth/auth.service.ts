@@ -6,8 +6,6 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateLoginDto } from './dto/create-login.dto';
 import { Model } from 'mongoose';
 import { UserDocument } from 'src/users/schemas/user.schema';
-import { CreateRecoveryDto } from './dto/create-recovery.dto';
-import { Console } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -28,9 +26,9 @@ export class AuthService {
       const user = await this.usersService.create(createAuthDto);
       const payload = {
         sub: user._id,
-        username: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
-        type: user.type,
       };
 
       return {
@@ -48,20 +46,22 @@ export class AuthService {
       const user = await this.userModel.findOne({
         email: createLoginDto.email,
       });
-      if (!user) return { error: 'Usuário não encontrado.' }
+
+      if (!user) throw new HttpException({}, HttpStatus.BAD_REQUEST);
       const isPasswordValid = await bcrypt.compare(
         createLoginDto.password,
         user.password,
       );
+    
       if (!isPasswordValid) {
-        return { error: 'Senha incorreta.' };
+        throw new HttpException({}, HttpStatus.BAD_REQUEST);
       }
 
       const payload = {
         sub: user._id,
-        username: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
-        type: user.type,
       };
 
       return {
@@ -73,25 +73,9 @@ export class AuthService {
     }
   }
 
-  async recovery(creatRecoveryDto: CreateRecoveryDto) {
-    try {
-      const user = await this.userModel
-        .findOne({ email: creatRecoveryDto.email })
-        .select('-password');
-
-      //LÓGICA PRA ENVIAR EMAIL
-
-      return {
-        user,
-      };
-    } catch (error) {
-      throw new HttpException(error, error.status).getResponse();
-    }
-  }
-
   async validateUser(email: string, password: string) {
+    console.log('testedawdawd')
     const user = await this.userModel.findOne({ email });
-
     if (user === null) {
       throw new HttpException({}, HttpStatus.UNAUTHORIZED);
     }

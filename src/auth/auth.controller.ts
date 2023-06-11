@@ -26,15 +26,4 @@ export class AuthController {
   login(@Body() createLoginDto: CreateLoginDto) {
     return this.authService.login(createLoginDto);
   }
-
-  @Post('/recovery')
-  @UsePipes(ValidationPipe)
-  recoveryPassword(@Body() createRecoveryDto: CreateRecoveryDto) {
-    return this.authService.recovery(createRecoveryDto);
-  }
-
-  @Get('/refresh')
-  refresh() {
-    return 'Conferred';
-  }
 }
